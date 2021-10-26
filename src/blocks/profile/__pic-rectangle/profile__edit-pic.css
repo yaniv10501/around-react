@@ -1,0 +1,17 @@
+.profile__edit-pic {
+  position: relative;
+  background-image: url(../../../images/edit-pic.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 0;
+  height: 120px;
+  width: 120px;
+  z-index: -2;
+  transition: background-color .1s linear;
+}
+
+.profile__edit-pic:hover {
+  cursor: pointer;
+  z-index: unset;
+  background-color: rgba(0, 0, 0, 0.8);
+}

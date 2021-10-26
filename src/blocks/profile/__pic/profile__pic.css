@@ -1,0 +1,20 @@
+.profile__pic {
+  position: relative;
+  border-radius: 50%;
+  height: 120px;
+  width: 120px;
+  z-index: -1;
+  background-position: center;
+  background-size: cover;
+}
+
+.profile__pic:hover {
+
+  cursor: pointer;
+}
+
+@media screen and (max-width: 652px) {
+  .profile__pic {
+    margin: 0 auto 30px auto;
+  }
+}

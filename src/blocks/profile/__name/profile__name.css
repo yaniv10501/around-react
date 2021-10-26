@@ -1,0 +1,26 @@
+.profile__name {
+  max-width: 375px;
+  color: #fff;
+  font-size: 42px;
+  line-height: 1.14;
+  font-weight: 500;
+  grid-area: name;
+  margin: 0;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 932px) {
+  .profile__name {
+    white-space: inherit;
+  }
+}
+
+@media screen and (max-width: 652px) {
+  .profile__name {
+    white-space: nowrap;
+    font-size: 22px;
+  }
+}

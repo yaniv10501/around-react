@@ -1,0 +1,27 @@
+.profile__info {
+  margin: auto auto auto 30px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-rows: auto 16px 1fr;
+  -ms-grid-columns: auto 18px 1fr;
+  grid-template:
+    'name edit' auto
+    'description blank' 1fr
+    / auto 1fr;
+  grid-gap: 16px 18px;
+}
+
+@media screen and (max-width: 932px) {
+  .profile__info {
+    max-width: 250px;
+    grid-column-gap: 0;
+  }
+}
+
+@media screen and (max-width: 652px) {
+  .profile__info {
+    margin: 0 auto 36px auto;
+    text-align: center;
+    grid-column-gap: 10px;
+  }
+}

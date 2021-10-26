@@ -1,0 +1,36 @@
+.profile__edit-button {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-image: url(../../../images/edit-button.svg);
+  background-color: rgba(0,0,0,0);
+  background-size: 10px 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 24px;
+  width: 24px;
+  -webkit-transform: translate(0, 15px);
+  -ms-transform: translate(0, 15px);
+  transform: translate(0, 15px);
+  padding: 0;
+  border: 1px solid #fff;
+  opacity: 1;
+  -webkit-transition: opacity 0.1s ease-out .1s;
+  -o-transition: opacity 0.1s ease-out .1s;
+  transition: opacity 0.1s ease-out .1s;
+}
+
+.profile__edit-button:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 652px) {
+  .profile__edit-button {
+    height: 18px;
+    width: 18px;
+    background-size: 7.5px 7.5px;
+    -webkit-transform: translate(0, 3px);
+    -ms-transform: translate(0, 3px);
+    transform: translate(0, 3px);
+  }
+}

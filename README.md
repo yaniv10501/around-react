@@ -1,70 +1,269 @@
-# Getting Started with Create React App
+# Project 10: Around The U.S. React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The 10th project of my journey of becoming a front-end developer.
 
-## Available Scripts
+[Link to the page](https://yaniv10501.github.io/around_react/)
 
-In the project directory, you can run:
+## Description
 
-### `yarn start`
+This project is an implementation of my [4th Project (git repo)](https://github.com/yaniv10501/web_project_4) in React.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+In this React app i used function components with state and effect hooks.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Overview
 
-### `yarn test`
+* **React Components**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* **Use State Hooks**
 
-### `yarn build`
+* **Use Effect Hooks**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### React Components
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+App consists of five React Components -
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* Header
 
-### `yarn eject`
+* Main
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+* Footer
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* PopupWithForm
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+* ImagePopup
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+**Main**
 
-## Learn More
+In the Main Component photo grid list there is a map method to return an array of Card Components, each card is an image fetched from the API along with the user information
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```jsx
+import { api } from '../utils/api.js';
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Promise.all([api.getUserInfo(), api.getIntialCard()])
+  .then(values => {
+    setUserInfo({
+      userName: values[0].name,
+      userDescription: values[0].about,
+      userAvatar: values[0].avatar,
+    });
+    setCards(values[1]);
+  })
+  .then(() => setIsLoading(false))
+  .catch(err => console.log(err));
+```
 
-### Code Splitting
+```jsx
+<ul className="photos__grid">
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+  {cards.map((card) => (
+    <Card card={card} onCardClick={props.onCardClick} />
+  ))}
 
-### Analyzing the Bundle Size
+</ul>
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Each Card Component have 4 props which are destructured from each card item -
 
-### Making a Progressive Web App
+```jsx
+const { _id, name, link, likes } = props.card;
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The name and the link of each card is stored in the handleClick method and get passed to the image popup on click -
 
-### Advanced Configuration
+```jsx
+const handleClick = () => {
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+  props.onCardClick(name, link)
 
-### Deployment
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+The handleClick method is declared in the App Component, and get passed as a prop to the Main component and then to the Card Component.
 
-### `yarn build` fails to minify
+```jsx
+return (
+  <div className="page">
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    <Header />
+
+    <Main
+      onEditProfileClick={handleEditProfileClick}
+      onAddPlaceClick={handleAddPlaceClick}
+      onEditAvatarClick={handleEditAvatarClick}
+      onCardClick={handleCardClick}
+    />
+```
+
+```jsx
+<Card card={card} onCardClick={props.onCardClick} />
+```
+
+**PopupWithForm**
+
+The PopupWithForm Component is used four times in the App Component to make the edit user info form, the add user avatar form, the add place card form and the delete place card form.
+
+```jsx
+<PopupWithForm
+        name="edit-info"
+        formName="editInfo"
+        formTitle="Edit profile"
+        submitTitle="Save"
+        isOpen={isPopupOpen.editInfo}
+        onClose={closeAllPopups}
+      >
+
+<PopupWithForm
+        name="edit-picture"
+        formName="editPicture"
+        formTitle="Change profile picture"
+        submitTitle="Save"
+        isOpen={isPopupOpen.editAvatar}
+        onClose={closeAllPopups}
+      >
+
+<PopupWithForm
+        name="add"
+        formName="add"
+        formTitle="New Place"
+        submitTitle="Create"
+        isOpen={isPopupOpen.addPlace}
+        onClose={closeAllPopups}
+      >
+
+<PopupWithForm
+        name="delete"
+        formName="delete"
+        formTitle="Are you sure?"
+        submitTitle="Yes"
+      />
+```
+
+The PopupWithForm Component also accepts children props, the children props are used for the different inputs for each form element.
+
+The PopupWithForm Component get the isOpen prop from the App Component, the isOpen prop is a state which control the visibility of the form
+
+```jsx
+<div
+      className={
+        props.isOpen
+          ? `popup popup_type_${props.name} popup_opened`
+          : `popup popup_type_${props.name}`
+      }>
+```
+
+### Use State Hooks
+
+In the App Component there are sevral useState Hooks
+
+```jsx
+const [selectedCard, setSelectedCard] = useState({
+    name: '',
+    link: ''
+  });
+
+  const [isPopupOpen, setIsPopupOpen] = useState({
+    editInfo: false,
+    addPlace: false,
+    editAvatar: false,
+    imagePopup: false
+  });
+```
+
+isPopupOpen state is an object that gets destructured every time a popup is opened and force close all popups when a popup is closed
+
+```jsx
+const handleAddPlaceClick = () => {
+    setIsPopupOpen({
+      ...isPopupOpen,
+      addPlace: true
+    });
+  };
+
+const closeAllPopups = () => {
+    setIsPopupOpen({
+      editInfo: false,
+      addPlace: false,
+      editAvatar: false,
+      imagePopup: false
+    });
+```
+
+The selectedCard state is set each time a card is clicked with the name and link from the Card Component.
+when the popup close if the selectedCard object has a name (which means an image popup is open), the state of the selectedCard is set to empty string after a timeout to prevent animation glitch.
+
+```jsx
+const handleCardClick = (name, link) => {
+    setSelectedCard({
+      name: name,
+      link: link
+    });
+    setIsPopupOpen({
+      ...isPopupOpen,
+      imagePopup: true
+    });
+  };
+
+const closeAllPopups = () => {
+    selectedCard.name && setTimeout(() => {
+      setSelectedCard({
+        name: '',
+        link: ''
+      });
+    }, 300);
+  };
+```
+
+There are also states in the Main Component -
+
+```jsx
+const [isLoading, setIsLoading] = useState(true);
+
+  const [cards, setCards] = useState([]);
+
+  const [userInfo, setUserInfo] = useState({
+    userName: '',
+    userDescription: '',
+    userAvatar: '',
+  });
+```
+
+The isLoading state is used the toggle the Main Compnent loading spinner while page is loading
+
+```jsx
+<div className={isLoading ? "spinner" : "spinner spinner_hidden"}><i></i></div>
+
+<div className={isLoading ? "content content_hidden" : "content"}>
+```
+
+The cards and userInfo states are used for the website content
+
+```jsx
+<div className="profile__info">
+
+  <h1 className="profile__name" id="name">{userInfo.userName}</h1>
+
+  <p className="profile__description" id="job">{userInfo.userDescription}</p>
+```
+
+### Use Effect Hooks
+
+The useEffect Hook is used in the Main Compnent to fetch the website data from the api and set the states of the userInfo and cards, and then set the isLoading state to false
+
+```jsx
+useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getIntialCard()])
+      .then(values => {
+        setUserInfo({
+          userName: values[0].name,
+          userDescription: values[0].about,
+          userAvatar: values[0].avatar,
+        });
+        setCards(values[1]);
+      })
+      .then(() => setIsLoading(false))
+      .catch(err => console.log(err));
+  }, []);
+```
+
+Promise.all used to wrap both fetches under one promise and then set the isLoading state.
+An empty array is a passed to the useEffect hook so it won't run again after mount.
