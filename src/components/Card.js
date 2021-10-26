@@ -1,6 +1,6 @@
 export default function Card(props) {
 
-  const { _id, name, link, likes } = props.card;
+  const { name, link, likes } = props.card;
 
   const handleClick = () => {
 
@@ -9,7 +9,7 @@ export default function Card(props) {
   }
 
   return (
-    <li className="photo" key={_id}>
+    <li className="photo">
 
       <img
         className="photo__image"

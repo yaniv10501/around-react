@@ -2,7 +2,7 @@
 
 The 10th project of my journey of becoming a front-end developer.
 
-[Link to the page](https://yaniv10501.github.io/around_react/)
+[Link to the page](https://yaniv10501.github.io/around-react/)
 
 ## Description
 

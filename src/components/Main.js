@@ -58,7 +58,7 @@ export default function Main(props) {
             <button
               className="profile__edit-button"
               type="button"
-              ariaLabel="Edit profile"
+              aria-label="Edit profile"
               onClick={props.onEditProfileClick}
             ></button>
 
@@ -67,7 +67,7 @@ export default function Main(props) {
           <button
             className="profile__add-button"
             type="button"
-            ariaLabel="Add a picture"
+            aria-label="Add a picture"
             onClick={props.onAddPlaceClick}
           ></button>
 
@@ -78,7 +78,7 @@ export default function Main(props) {
           <ul className="photos__grid">
 
             {cards.map((card) => (
-                  <Card card={card} onCardClick={props.onCardClick} />
+                  <Card card={card} key={card._id} onCardClick={props.onCardClick} />
             ))}
 
           </ul>

@@ -95,8 +95,8 @@ function App() {
           type="text"
           placeholder="name"
           name="name"
-          minlength="2"
-          maxlength="40"
+          minLength="2"
+          maxLength="40"
           required
         ></input>
 
@@ -108,8 +108,8 @@ function App() {
           type="text"
           placeholder="about me"
           name="job"
-          minlength="2"
-          maxlength="200"
+          minLength="2"
+          maxLength="200"
           required
         ></input>
 
@@ -154,8 +154,8 @@ function App() {
           type="text"
           placeholder="Title"
           name="title"
-          minlength="2"
-          maxlength="30"
+          minLength="2"
+          maxLength="30"
           required
         ></input>
 

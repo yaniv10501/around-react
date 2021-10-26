@@ -19,7 +19,7 @@ export default function ImagePopup(props) {
         <button
           className="popup__close-button"
           type="button"
-          ariaLabel="Close"
+          aria-label="Close"
           onClick={props.onClose}
         ></button>
 

@@ -10,7 +10,7 @@ export default function PopupWithForm(props) {
 
       <div className="popup__container">
 
-        <form className="popup__form" name={props.formName} novalidate _id="">
+        <form className="popup__form" name={props.formName} noValidate _id="">
 
           <h2 className="popup__title">{props.formTitle}</h2>
 
@@ -23,7 +23,7 @@ export default function PopupWithForm(props) {
         <button
           className="popup__close-button"
           type="button"
-          ariaLabel="Close"
+          aria-label="Close"
           onClick={props.onClose}
         ></button>
 
