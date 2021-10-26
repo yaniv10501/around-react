@@ -1,11 +1,13 @@
-export default function ImagePopup(props) {
-
-  const { name, link } = props.selectedCard;
+export default function ImagePopup({
+  selectedCard: { name, link },
+  isOpen,
+  onClose
+}) {
 
   return (
     <div
       className={
-        props.isOpen
+        isOpen
           ? "popup popup_type_image popup_opened"
           : "popup popup_type_image"
       }>
@@ -20,8 +22,8 @@ export default function ImagePopup(props) {
           className="popup__close-button"
           type="button"
           aria-label="Close"
-          onClick={props.onClose}
-        ></button>
+          onClick={onClose}
+        />
 
       </div>
 

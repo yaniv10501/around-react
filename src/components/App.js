@@ -4,7 +4,8 @@ import Main from './Main.js';
 import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { api } from '../utils/api.js';
 
 function App() {
 
@@ -13,32 +14,24 @@ function App() {
     link: ''
   });
 
-  const [isPopupOpen, setIsPopupOpen] = useState({
-    editInfo: false,
-    addPlace: false,
-    editAvatar: false,
-    imagePopup: false
-  });
+  const [isEditInfoPopupOpen, setIsEditIntoPopupOpen] = useState(false);
+
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
 
   const handleEditAvatarClick = () => {
-    setIsPopupOpen({
-      ...isPopupOpen,
-      editAvatar: true
-    });
+    setIsEditAvatarPopupOpen(true);
   };
 
   const handleEditProfileClick = () => {
-    setIsPopupOpen({
-      ...isPopupOpen,
-      editInfo: true
-    });
+    setIsEditIntoPopupOpen(true);
   };
 
   const handleAddPlaceClick = () => {
-    setIsPopupOpen({
-      ...isPopupOpen,
-      addPlace: true
-    });
+    setIsAddPlacePopupOpen(true);
   };
 
   const handleCardClick = (name, link) => {
@@ -46,26 +39,39 @@ function App() {
       name: name,
       link: link
     });
-    setIsPopupOpen({
-      ...isPopupOpen,
-      imagePopup: true
-    });
+    setIsImagePopupOpen(true);
   };
 
   const closeAllPopups = () => {
-    setIsPopupOpen({
-      editInfo: false,
-      addPlace: false,
-      editAvatar: false,
-      imagePopup: false
-    });
-    selectedCard.name && setTimeout(() => {
-      setSelectedCard({
-        name: '',
-        link: ''
-      });
-    }, 300);
+    setIsEditAvatarPopupOpen(false);
+    setIsEditIntoPopupOpen(false);
+    setIsAddPlacePopupOpen(false);
+    setIsImagePopupOpen(false);
   };
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [cards, setCards] = useState([]);
+
+  const [userInfo, setUserInfo] = useState({
+    userName: '',
+    userDescription: '',
+    userAvatar: '',
+  });
+
+  useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getIntialCard()])
+      .then(values => {
+        setUserInfo({
+          userName: values[0].name,
+          userDescription: values[0].about,
+          userAvatar: values[0].avatar,
+        });
+        setCards(values[1]);
+      })
+      .then(() => setIsLoading(false))
+      .catch(err => console.log(err));
+  }, []);
 
   return (
     <div className="page">
@@ -73,6 +79,9 @@ function App() {
       <Header />
 
       <Main
+        isLoading={isLoading}
+        user={userInfo}
+        cards={cards}
         onEditProfileClick={handleEditProfileClick}
         onAddPlaceClick={handleAddPlaceClick}
         onEditAvatarClick={handleEditAvatarClick}
@@ -86,7 +95,7 @@ function App() {
         formName="editInfo"
         formTitle="Edit profile"
         submitTitle="Save"
-        isOpen={isPopupOpen.editInfo}
+        isOpen={isEditInfoPopupOpen}
         onClose={closeAllPopups}
       >
         <input
@@ -98,9 +107,9 @@ function App() {
           minLength="2"
           maxLength="40"
           required
-        ></input>
+        />
 
-        <span className="popup__error name-input-error"></span>
+        <span className="popup__error name-input-error" />
 
         <input
           className="popup__input popup__input_type_about"
@@ -111,9 +120,9 @@ function App() {
           minLength="2"
           maxLength="200"
           required
-        ></input>
+        />
 
-        <span className="popup__error about-input-error"></span>
+        <span className="popup__error about-input-error" />
 
       </PopupWithForm>
 
@@ -122,7 +131,7 @@ function App() {
         formName="editPicture"
         formTitle="Change profile picture"
         submitTitle="Save"
-        isOpen={isPopupOpen.editAvatar}
+        isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
       >
 
@@ -133,9 +142,9 @@ function App() {
           name="picture"
           type="url"
           required
-        ></input>
+        />
 
-        <span className="popup__error profile-picture-input-error"></span>
+        <span className="popup__error profile-picture-input-error" />
 
       </PopupWithForm>
 
@@ -144,7 +153,7 @@ function App() {
         formName="add"
         formTitle="New Place"
         submitTitle="Create"
-        isOpen={isPopupOpen.addPlace}
+        isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
       >
 
@@ -157,9 +166,9 @@ function App() {
           minLength="2"
           maxLength="30"
           required
-        ></input>
+        />
 
-        <span className="popup__error  title-input-error"></span>
+        <span className="popup__error  title-input-error" />
 
         <input
           className="popup__input popup__input_type_url"
@@ -167,9 +176,10 @@ function App() {
           type="url"
           placeholder="Image URL"
           name="url"
-          required></input>
+          required
+        />
 
-        <span className="popup__error url-input-error"></span>
+        <span className="popup__error url-input-error" />
 
       </PopupWithForm>
 
@@ -181,7 +191,7 @@ function App() {
       />
 
       <ImagePopup
-        isOpen={isPopupOpen.imagePopup}
+        isOpen={isImagePopupOpen}
         selectedCard={selectedCard}
         onClose={closeAllPopups}
       />

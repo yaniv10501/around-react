@@ -34,7 +34,7 @@ App consists of five React Components -
 
 **Main**
 
-In the Main Component photo grid list there is a map method to return an array of Card Components, each card is an image fetched from the API along with the user information
+In the Main Component photo grid list there is a map method to return an array of Card Components, each card is an image fetched from the API along with the user information in the App Component -
 
 ```jsx
 import { api } from '../utils/api.js';
@@ -50,22 +50,54 @@ Promise.all([api.getUserInfo(), api.getIntialCard()])
   })
   .then(() => setIsLoading(false))
   .catch(err => console.log(err));
+
+return (
+  <div className="page">
+
+    <Header />
+
+    <Main
+      isLoading={isLoading}
+      user={userInfo}
+      cards={cards}
+      onEditProfileClick={handleEditProfileClick}
+      onAddPlaceClick={handleAddPlaceClick}
+      onEditAvatarClick={handleEditAvatarClick}
+      onCardClick={handleCardClick}
+      />
 ```
 
 ```jsx
 <ul className="photos__grid">
 
   {cards.map((card) => (
-    <Card card={card} onCardClick={props.onCardClick} />
+    <Card card={card} key={card._id} onCardClick={onCardClick} />
   ))}
 
 </ul>
 ```
 
-Each Card Component have 4 props which are destructured from each card item -
+Each Card Component have 4 props which are getting destructured from each card item, all other components are also getting  their props destructured -
 
 ```jsx
-const { _id, name, link, likes } = props.card;
+export default function Card({
+  card: { name, link, likes },
+  onCardClick
+})
+
+export default function Main({
+  isLoading,
+  user: {
+    userName,
+    userAvatar,
+    userDescription
+  },
+  cards,
+  onEditProfileClick,
+  onAddPlaceClick,
+  onEditAvatarClick,
+  onCardClick
+})
 ```
 
 The name and the link of each card is stored in the handleClick method and get passed to the image popup on click -
@@ -73,7 +105,7 @@ The name and the link of each card is stored in the handleClick method and get p
 ```jsx
 const handleClick = () => {
 
-  props.onCardClick(name, link)
+  onCardClick(name, link)
 
 }
 ```
@@ -82,20 +114,23 @@ The handleClick method is declared in the App Component, and get passed as a pro
 
 ```jsx
 return (
-  <div className="page">
+<div className="page">
 
-    <Header />
+  <Header />
 
-    <Main
-      onEditProfileClick={handleEditProfileClick}
-      onAddPlaceClick={handleAddPlaceClick}
-      onEditAvatarClick={handleEditAvatarClick}
-      onCardClick={handleCardClick}
-    />
+  <Main
+    isLoading={isLoading}
+    user={userInfo}
+    cards={cards}
+    onEditProfileClick={handleEditProfileClick}
+    onAddPlaceClick={handleAddPlaceClick}
+    onEditAvatarClick={handleEditAvatarClick}
+    onCardClick={handleCardClick}
+  />
 ```
 
 ```jsx
-<Card card={card} onCardClick={props.onCardClick} />
+<Card card={card} key={card._id} onCardClick={onCardClick} />
 ```
 
 **PopupWithForm**
@@ -104,38 +139,38 @@ The PopupWithForm Component is used four times in the App Component to make the 
 
 ```jsx
 <PopupWithForm
-        name="edit-info"
-        formName="editInfo"
-        formTitle="Edit profile"
-        submitTitle="Save"
-        isOpen={isPopupOpen.editInfo}
-        onClose={closeAllPopups}
-      >
+  name="edit-info"
+  formName="editInfo"
+  formTitle="Edit profile"
+  submitTitle="Save"
+  isOpen={isEditInfoPopupOpen}
+  onClose={closeAllPopups}
+>
 
 <PopupWithForm
-        name="edit-picture"
-        formName="editPicture"
-        formTitle="Change profile picture"
-        submitTitle="Save"
-        isOpen={isPopupOpen.editAvatar}
-        onClose={closeAllPopups}
-      >
+  name="edit-picture"
+  formName="editPicture"
+  formTitle="Change profile picture"
+  submitTitle="Save"
+  isOpen={isEditAvatarPopupOpen}
+  onClose={closeAllPopups}
+>
 
 <PopupWithForm
-        name="add"
-        formName="add"
-        formTitle="New Place"
-        submitTitle="Create"
-        isOpen={isPopupOpen.addPlace}
-        onClose={closeAllPopups}
-      >
+  name="add"
+  formName="add"
+  formTitle="New Place"
+  submitTitle="Create"
+  isOpen={isAddPlacePopupOpen}
+  onClose={closeAllPopups}
+>
 
 <PopupWithForm
-        name="delete"
-        formName="delete"
-        formTitle="Are you sure?"
-        submitTitle="Yes"
-      />
+  name="delete"
+  formName="delete"
+  formTitle="Are you sure?"
+  submitTitle="Yes"
+/>
 ```
 
 The PopupWithForm Component also accepts children props, the children props are used for the different inputs for each form element.
@@ -144,11 +179,11 @@ The PopupWithForm Component get the isOpen prop from the App Component, the isOp
 
 ```jsx
 <div
-      className={
-        props.isOpen
-          ? `popup popup_type_${props.name} popup_opened`
-          : `popup popup_type_${props.name}`
-      }>
+  className={
+    isOpen
+      ? `popup popup_type_${name} popup_opened`
+      : `popup popup_type_${name}`
+  }>
 ```
 
 ### Use State Hooks
@@ -159,72 +194,74 @@ In the App Component there are sevral useState Hooks
 const [selectedCard, setSelectedCard] = useState({
     name: '',
     link: ''
-  });
+});
 
-  const [isPopupOpen, setIsPopupOpen] = useState({
-    editInfo: false,
-    addPlace: false,
-    editAvatar: false,
-    imagePopup: false
-  });
+const [isEditInfoPopupOpen, setIsEditIntoPopupOpen] = useState(false);
+
+const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+
+const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+
+const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+
+const [isLoading, setIsLoading] = useState(true);
+
+const [cards, setCards] = useState([]);
+
+const [userInfo, setUserInfo] = useState({
+  userName: '',
+  userDescription: '',
+  userAvatar: '',
+});
 ```
 
-isPopupOpen state is an object that gets destructured every time a popup is opened and force close all popups when a popup is closed
+The popups states are booleans that gets toggled every time a popup is opened and force close all popups when a popup is closed
 
 ```jsx
+const handleEditAvatarClick = () => {
+    setIsEditAvatarPopupOpen(true);
+};
+
+const handleEditProfileClick = () => {
+  setIsEditIntoPopupOpen(true);
+};
+
 const handleAddPlaceClick = () => {
-    setIsPopupOpen({
-      ...isPopupOpen,
-      addPlace: true
-    });
-  };
+  setIsAddPlacePopupOpen(true);
+};
 
 const closeAllPopups = () => {
-    setIsPopupOpen({
-      editInfo: false,
-      addPlace: false,
-      editAvatar: false,
-      imagePopup: false
-    });
+  setIsEditAvatarPopupOpen(false);
+  setIsEditIntoPopupOpen(false);
+  setIsAddPlacePopupOpen(false);
+  setIsImagePopupOpen(false);
+};
 ```
 
-The selectedCard state is set each time a card is clicked with the name and link from the Card Component.
-when the popup close if the selectedCard object has a name (which means an image popup is open), the state of the selectedCard is set to empty string after a timeout to prevent animation glitch.
+The selectedCard state is set each time a card is clicked with the name and link from the Card Component -
 
 ```jsx
 const handleCardClick = (name, link) => {
-    setSelectedCard({
-      name: name,
-      link: link
-    });
-    setIsPopupOpen({
-      ...isPopupOpen,
-      imagePopup: true
-    });
-  };
-
-const closeAllPopups = () => {
-    selectedCard.name && setTimeout(() => {
-      setSelectedCard({
-        name: '',
-        link: ''
-      });
-    }, 300);
-  };
+  setSelectedCard({
+    name: name,
+    link: link
+  });
+  setIsImagePopupOpen(true);
+};
 ```
 
-There are also states in the Main Component -
+The isLoading, cards and user states are passed to the Main Component as props -
 
 ```jsx
-const [isLoading, setIsLoading] = useState(true);
-
-  const [cards, setCards] = useState([]);
-
-  const [userInfo, setUserInfo] = useState({
-    userName: '',
-    userDescription: '',
-    userAvatar: '',
-  });
+<Main
+  isLoading={isLoading}
+  user={userInfo}
+  cards={cards}
+  onEditProfileClick={handleEditProfileClick}
+  onAddPlaceClick={handleAddPlaceClick}
+  onEditAvatarClick={handleEditAvatarClick}
+  onCardClick={handleCardClick}
+/>
 ```
 
 The isLoading state is used the toggle the Main Compnent loading spinner while page is loading
@@ -240,29 +277,39 @@ The cards and userInfo states are used for the website content
 ```jsx
 <div className="profile__info">
 
-  <h1 className="profile__name" id="name">{userInfo.userName}</h1>
+  <h1 className="profile__name" id="name">{userName}</h1>
 
-  <p className="profile__description" id="job">{userInfo.userDescription}</p>
+  <p className="profile__description" id="job">{userDescription}</p>
+```
+
+```jsx
+<ul className="photos__grid">
+
+  {cards.map((card) => (
+    <Card card={card} key={card._id} onCardClick={onCardClick} />
+  ))}
+
+</ul>
 ```
 
 ### Use Effect Hooks
 
-The useEffect Hook is used in the Main Compnent to fetch the website data from the api and set the states of the userInfo and cards, and then set the isLoading state to false
+The useEffect Hook is used in the App Compnent to fetch the website data from the api and set the states of the userInfo and cards, and then set the isLoading state to false
 
 ```jsx
 useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getIntialCard()])
-      .then(values => {
-        setUserInfo({
-          userName: values[0].name,
-          userDescription: values[0].about,
-          userAvatar: values[0].avatar,
-        });
-        setCards(values[1]);
-      })
-      .then(() => setIsLoading(false))
-      .catch(err => console.log(err));
-  }, []);
+  Promise.all([api.getUserInfo(), api.getIntialCard()])
+    .then(values => {
+      setUserInfo({
+        userName: values[0].name,
+        userDescription: values[0].about,
+        userAvatar: values[0].avatar,
+      });
+      setCards(values[1]);
+    })
+    .then(() => setIsLoading(false))
+    .catch(err => console.log(err));
+}, []);
 ```
 
 Promise.all used to wrap both fetches under one promise and then set the isLoading state.

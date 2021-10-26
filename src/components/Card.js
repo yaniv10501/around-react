@@ -1,10 +1,11 @@
-export default function Card(props) {
-
-  const { name, link, likes } = props.card;
+export default function Card({
+  card: { name, link, likes },
+  onCardClick
+}) {
 
   const handleClick = () => {
 
-    props.onCardClick(name, link)
+    onCardClick(name, link)
 
   }
 
@@ -18,7 +19,7 @@ export default function Card(props) {
         onClick={handleClick}
       />
 
-      <button className="photo__delete" type="button" aria-label="Delete"></button>
+      <button className="photo__delete" type="button" aria-label="Delete" />
 
       <div className="photo__info">
 
@@ -26,7 +27,7 @@ export default function Card(props) {
 
         <div className="photo__like-container">
 
-          <button className="photo__like" type="button" aria-label="Like"></button>
+          <button className="photo__like" type="button" aria-label="Like" />
 
           <p className="photo__like-count">{likes.length}</p>
 
