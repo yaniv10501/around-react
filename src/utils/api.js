@@ -207,4 +207,4 @@ const api = new Api({
   authorization: "12be1991-4f28-449f-a9a9-71d4704b25a2"
 })
 
-export { api };
+export default api;
