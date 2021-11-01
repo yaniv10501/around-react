@@ -1,18 +1,21 @@
 import Card from './Card.js';
+import { useContext } from 'react';
+import CurrentUserContext from '../contexts/CurrentUserContext';
 
 export default function Main({
   isLoading,
-  user: {
-    userName,
-    userAvatar,
-    userDescription
-  },
   cards,
   onEditProfileClick,
   onAddPlaceClick,
   onEditAvatarClick,
-  onCardClick
+  onDeleteCardClick,
+  onCardClick,
+  onCardLike,
 }) {
+
+  const currentUser = useContext(CurrentUserContext);
+
+  const { name, about, avatar } = currentUser;
 
   return (
     <main className="container">
@@ -30,16 +33,16 @@ export default function Main({
 
             <div
               className="profile__pic"
-              style={{ backgroundImage: `url(${userAvatar})` }}
+              style={{ backgroundImage: `url(${avatar})` }}
             />
 
           </div>
 
           <div className="profile__info">
 
-            <h1 className="profile__name" id="name">{userName}</h1>
+            <h1 className="profile__name" id="name">{name}</h1>
 
-            <p className="profile__description" id="job">{userDescription}</p>
+            <p className="profile__description" id="job">{about}</p>
 
             <button
               className="profile__edit-button"
@@ -64,7 +67,13 @@ export default function Main({
           <ul className="photos__grid">
 
             {cards.map((card) => (
-              <Card card={card} key={card._id} onCardClick={onCardClick} />
+              <Card
+                card={card}
+                key={card._id}
+                onCardClick={onCardClick}
+                onLike={onCardLike}
+                onDelete={onDeleteCardClick}
+              />
             ))}
 
           </ul>
